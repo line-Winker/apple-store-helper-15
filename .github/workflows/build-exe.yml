@@ -1,0 +1,35 @@
+name: Build Windows EXE
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [ main, master ]
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: '1.22'
+
+      - name: Download dependencies
+        run: go mod download
+
+      - name: Build EXE
+        run: |
+          go build -o apple-store-helper.exe .
+
+      - name: Upload EXE
+        uses: actions/upload-artifact@v4
+        with:
+          name: apple-store-helper-windows
+          path: apple-store-helper.exe
